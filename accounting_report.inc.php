@@ -4303,7 +4303,7 @@ ORDER BY t.kdsbdaya,t.nmsbdaya";
                         GROUP BY {$addsql_group} tanggal,j.nobukti,j.keterangan,ket_total
                         ORDER BY {$addsql_group} tanggal,nobukti";
                         
-                      //echo '<PRE>'.$sql.'</PRE>';exit();
+                      // echo '<PRE>'.$sql.'</PRE>';
             
             //$base= true;            
             $rs = $base->dbQuery($sql);            
@@ -4492,21 +4492,21 @@ ORDER BY t.kdsbdaya,t.nmsbdaya";
                                 'VTGL'  		=> $rs->fields['tanggal'],
                                 'VNOBUKTI'  	=> $rs->fields['nobukti'],
                                 'VURAIAN'   	=> $rs->fields['keterangan'],
-                                'VMATERIAL' 	=> number_format($data_total['material'][$k]), //$this->format_money2($base, $rs->fields['material']),
-                                'VUPAH' 		=> $this->format_money2($base, $rs->fields['upah']),
-                                'VPERALATAN'    => $this->format_money2($base, $rs->fields['peralatan']),
-                                'VSUBKON'   	=> $this->format_money2($base, $rs->fields['subkon']),
-                                'VSEKRETARIAT'  => $this->format_money2($base, $rs->fields['sekretariat']),
-                                'VFASILITAS'  	=> $this->format_money2($base, $rs->fields['fasilitas']),
-                                'VPERSONALIA' 	=> $this->format_money2($base, $rs->fields['personalia']),
-                                'VKEUANGAN'  	=> $this->format_money2($base, $rs->fields['keuangan']),
-                                'VPPH'  		=> $this->format_money2($base, $rs->fields['pph']),
-                                'VKENDARAAN'  	=> $this->format_money2($base, $rs->fields['kendaraan']),
-                                'VPENGUJIAN'  	=> $this->format_money2($base, $rs->fields['pengujian']),
-                                'VUMUM'  		=> $this->format_money2($base, $rs->fields['umum']),
-                                'VJUMLAH'   	=> $this->format_money2($base, $rs->fields['jumlah']),                              
-                                'VPEMASARAN' 	=> $this->format_money2($base, $rs->fields['pemasaran']),
-                                'VBEBAN' 		=> $this->format_money2($base, $rs->fields['beban']),
+                                'VMATERIAL' 	=> number_format( $rs->fields['material']),
+                                'VUPAH' 		=> number_format( $rs->fields['upah']),
+                                'VPERALATAN'    => number_format( $rs->fields['peralatan']),
+                                'VSUBKON'   	=> number_format( $rs->fields['subkon']),
+                                'VSEKRETARIAT'  => number_format( $rs->fields['sekretariat']),
+                                'VFASILITAS'  	=> number_format( $rs->fields['fasilitas']),
+                                'VPERSONALIA' 	=> number_format( $rs->fields['personalia']),
+                                'VKEUANGAN'  	=> number_format( $rs->fields['keuangan']),
+                                'VPPH'  		=> number_format( $rs->fields['pph']),
+                                'VKENDARAAN'  	=> number_format( $rs->fields['kendaraan']),
+                                'VPENGUJIAN'  	=> number_format( $rs->fields['pengujian']),
+                                'VUMUM'  		=> number_format( $rs->fields['umum']),
+                                'VJUMLAH'   	=> number_format( $rs->fields['jumlah']),                              
+                                'VPEMASARAN' 	=> number_format( $rs->fields['pemasaran']),
+                                'VBEBAN' 		=> number_format( $rs->fields['beban']),
                                 'none' 			=> '',
                              );
 							//var_dump($dynamic_record);
