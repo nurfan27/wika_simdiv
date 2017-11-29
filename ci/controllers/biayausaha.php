@@ -97,25 +97,24 @@ class Biayausaha extends CI_Controller {
 			$data['month5'] = $month5;
 			$data['uker_'] = $uker_;
 
-			$bulan_ini = date("Y-m-d",mktime(0,0,0,$month,1,$year));
-			$bulan_depan = date("Y-m-d",mktime(0,0,0,$month+1,1,$year));
+			//$bulan_ini = date("Y-m-d",mktime(0,0,0,$month,1,$year));
+			//$bulan_depan = date("Y-m-d",mktime(0,0,0,$month+1,1,$year));
 			//echo 'test_var : '.$bulan_ini.'-'.$bulan_depan.'-'.$month5.'-'.$uker_;
  			//exit();
 
- 			$data['data_rows'] = $this->mdl_report_biayausaha->data_transaksi();
+ 			$data['datarows'] = $this->mdl_report_biayausaha->data_transaksi_coa();
  			// print_r($data['data_rows']->fetchAll());die();
 
-			$data['saldo_tahunlalu'] = $this->mdl_report_biayausaha->saldo_tahunlalu(strtolower($div),$month2,$month5,$uker_,'t');
+			//$data['saldo_tahunlalu'] = $this->mdl_report_biayausaha->saldo_tahunlalu(strtolower($div),$month2,$month5,$uker_,'t');
 			// $data['rincian_biayausaha']	= $this->mdl_report_biayausaha->rincian_biayausaha(strtolower($div),$year,$month,$uker_);
-
 			
-			$i = 0;
-			$j = 0;
+			//$i = 0;
+			//$j = 0;
 			
 			//var_dump($data['rincian_biayausaha']);exit();
 			//var_dump($data['saldo_tahunlalu']);exit();
 			
-			$data['groupcoa_3dgt'] = $this->mdl_report_biayausaha->get_dperkir_3();
+			//$data['groupcoa_3dgt'] = $this->mdl_report_biayausaha->get_dperkir_3();
 
 			$data['month']   	= $this->rmonth($month);
 	        $data['year']    	= $year;
@@ -124,6 +123,7 @@ class Biayausaha extends CI_Controller {
 			$data['pembuat'] 	= $admin_fullname;
 			//$this->load->view('report/biayausaha_rinci', $data);
 			//var_dump($data);exit;
+			
 			$output = $this->load->view('report/biayausaha_rinciperkiraan', $data, true);
 		
 			$filename 		= "bius_".$type."_".$type2."_".$uker_."_".strtoupper($POST['div'])."_".$year."_".$month.".html";

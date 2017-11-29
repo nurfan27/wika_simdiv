@@ -66,12 +66,34 @@ class Mdl_report_biayausaha extends Mdl_core {
 		return $this->_DB->query($sql);
 	}
 
-	public function data_transaksi(){
+	public function data_transaksi_coa(){
 		$sql = "
 			SELECT
 				substr(j.kdperkiraan, 1, 3) AS kdper_3dgt,
 				substr(j.kdperkiraan, 1, 4) AS kdper_4dgt,
 				substr(j.kdperkiraan, 1, 5) AS kdper_5dgt,
+				d.nmperkiraan
+			FROM
+				jurnal_v j
+			JOIN dperkir d ON j.kdperkiraan = d.kdperkiraan
+			WHERE
+				j.kdperkiraan LIKE '49%'
+			AND tanggal > '2017-10-01'
+			AND tanggal < '2017-11-01'
+			GROUP BY
+			j.kdperkiraan,
+				d.nmperkiraan
+			ORDER BY
+				kdper_5dgt ASC
+		";
+
+		return $this->_DB->query($sql);
+	}
+
+	public function data_transaksi_detail($key){
+		$sql = "
+			SELECT
+				j.kdperkiraan AS coa,
 				d.nmperkiraan,
 				j.tanggal,
 				j.nobukti,
@@ -81,19 +103,19 @@ class Mdl_report_biayausaha extends Mdl_core {
 				jurnal_v j
 			JOIN dperkir d ON j.kdperkiraan = d.kdperkiraan
 			WHERE
-				j.kdperkiraan LIKE '49%'
+				j.kdperkiraan = '".$key."'
 			AND tanggal > '2017-10-01'
 			AND tanggal < '2017-11-01'
 			GROUP BY
-				j.kdperkiraan,
+			j.kdperkiraan,
 				d.nmperkiraan,
 				j.tanggal,
 				j.nobukti,
 				j.keterangan,
 				j.rupiah
 			ORDER BY
-				kdper_5dgt ASC
-		";
+				coa ASC
+			";
 
 		return $this->_DB->query($sql);
 	}

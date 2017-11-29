@@ -60,52 +60,119 @@ $total_bawah = 0;
 ?>
 
 <tr class="sums">
-	<td colspan="5" NOWRAP class="garis_bwh2"<strong><b>49&nbsp;PENGEMBANGAN SDM</b></strong></td>		
+	<td colspan="5" NOWRAP class="garis_bwh2"><b>49&nbsp;PENGEMBANGAN SDM</b></td>		
 	<td align=left class="garis_bwh2"><div align="right"></div></td>
 	<td align=left class="garis_bwh2"><div align="right"></div></td>
 </tr>
 
-<?php 
-while ( ($item = @$groupcoa_3dgt->fetchObject()) !== false ){
+<?php
+$pos_3dgt = 0;
+$pos_4dgt = 0;
+while ( ($item = @$datarows->fetchObject()) !== false ){ # start of while 01
+$saldo_bln_lalu = 0;
+$cek_3dgt = $item->kdper_3dgt;
+$cek_4dgt = $item->kdper_4dgt;
 ?>	
-	<tr class="sums">
-		<td colspan="5" NOWRAP class="garis_bwh2"<strong><b><?php echo $item->coa;?>&nbsp;<?php echo $nama___; ?></b></strong></td>		
-		<td align=left class="garis_bwh2"><div align="right"><strong><?php echo $this->format->number(@$rincitotal_2);?></strong></div></td>
-		<td align=left class="garis_bwh2"><div align="right"><strong><?php echo $this->format->number(@$total_2+$rincitotal_2);?></strong></div></td>
-	</tr>
-	<?php $groupcoa_4dgt = $this->mdl_report_biayausaha->get_dperkir_4($item->coa); 
-	while ( ($item2 = @$groupcoa_4dgt->fetchObject()) !== false ){?>
-	<tr class="sums">
-		<td colspan="5" NOWRAP class="garis_bwh2">&nbsp;&nbsp;<strong><b><?php echo $item2->coa;?>&nbsp;<?php echo $nama___; ?></b></strong></td>		
-		<td align=left class="garis_bwh2"><div align="right"><strong><?php echo $this->format->number(@$rincitotal_2);?></strong></div></td>
-		<td align=left class="garis_bwh2"><div align="right"><strong><?php echo $this->format->number(@$total_2+$rincitotal_2);?></strong></div></td>
-	</tr>
-		<?php 
-		$saldo_tahunlalu = $this->mdl_report_biayausaha->saldo_tahunlalu(strtolower($div),$month2,$month5,$uker_,'t');
-		while ( ($item_isi = $saldo_tahunlalu->fetchObject()) !== false ){ //var_dump($item_isi);
-		?>
 
-		
-		<?php
-		if (substr($item_isi->kdperkiraan, 0,4) == $item2->coa) {
-				$nmperkiraan_ = $this->mdl_report_biayausaha->get_namaperkiraan_dperkir($item_isi->kdperkiraan);
-				if(isset($item_isi->debit))
-				{
-					$nilai = $item_isi->total;
-				}
-				else {
-					$nilai = 0;
-				}?>
-				<tr>
-					<td colspan="5"  class="garis_bwh2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><?php echo $item_isi->kdperkiraan;?> &nbsp; <?php echo $nmperkiraan_;?></strong></td>
-					<td align=left class="garis_bwh2"><div align="right"><strong>Saldo Bulan Lalu :</strong></div></td>
-					<td align=left class="garis_bwh2"><div align="right"><strong><?php echo $this->format->number(@$nilai);?></strong></div></td>
-				</tr>
-<?php 
-			}
-		}
-	}
-} 
+<?php if ($cek_3dgt != $pos_3dgt): $pos_3dgt = $item->kdper_3dgt;?>
+	<tr class="sums">
+		<td colspan="5" NOWRAP class="garis_bwh2"><b><?php echo $item->kdper_3dgt;?>&nbsp;</b></td>		
+		<td align=left class="garis_bwh2"><div align="right"></div></td>
+		<td align=left class="garis_bwh2"><div align="right"></div></td>
+	</tr>
+<?php endif ?>
+<?php if ($cek_4dgt != $pos_4dgt):  $pos_4dgt = $item->kdper_4dgt;?>
+	<tr class="sums">
+		<td colspan="5" NOWRAP class="garis_bwh2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><?php echo $item->kdper_4dgt;?></b>&nbsp;</td>		
+		<td align=left class="garis_bwh2"><div align="right"></div></td>
+		<td align=left class="garis_bwh2"><div align="right"></div></td>
+	</tr>
+<?php endif ?>
+
+	<!-- start sub header -->
+	<?php 
+	$ql02 = "
+			SELECT
+				SUM(CASE WHEN dk = 'D' THEN
+			               rupiah
+			           ELSE
+			              rupiah * -1
+			           END ) as rupiah
+			FROM
+				jurnal_v
+			WHERE
+				kdperkiraan = '".$item->kdper_5dgt."'
+			AND tanggal >= '2017-01-01'
+			AND tanggal < '2017-11-01'
+			";
+
+	$sql02 = $this->db->query($ql02)->row();
+	$saldo_bln_lalu = $sql02->rupiah; 
+	?>
+
+	<tr>
+		<td NOWRAP class="garis_bwh2">&nbsp;</td>
+		<td colspan="4">&nbsp;&nbsp;&nbsp;&nbsp;<b><?php echo $item->kdper_5dgt;?>&nbsp;<?php echo $item->nmperkiraan;?></b></td>		
+		<td class="garis_bwh2" align="right" nowrap="nowrap"><b>saldo Bulan Lalu</b></td>
+		<td class="garis_bwh2" align="right" nowrap="nowrap"><?php echo $this->format->number($saldo_bln_lalu) ?></td>
+	</tr>
+	<!-- end sub header -->
+
+	<!-- start transaksi -->
+	<?php 
+	$ql = "
+		SELECT
+			j.kdperkiraan AS coa,
+			d.nmperkiraan,
+			j.tanggal,
+			j.nobukti,
+			j.keterangan,
+			j.rupiah
+		FROM
+			jurnal_v j
+		JOIN dperkir d ON j.kdperkiraan = d.kdperkiraan
+		WHERE
+			j.kdperkiraan = '".$item->kdper_5dgt."'
+		AND tanggal > '2017-10-01'
+		AND tanggal < '2017-11-01'
+		GROUP BY
+		j.kdperkiraan,
+			d.nmperkiraan,
+			j.tanggal,
+			j.nobukti,
+			j.keterangan,
+			j.rupiah
+		ORDER BY
+			coa ASC
+		";
+
+	$sql = $this->db->query($ql)->result();
+
+
+	$sub_total = 0;
+	foreach ($sql as $key) {
+		$saldo_bln_lalu = $saldo_bln_lalu - $key->rupiah;
+		$sub_total = $sub_total + $key->rupiah;
+		?>
+		<tr>
+			<td colspan="2" >&nbsp;</td>		
+			<td class="garis_bwh2" align="center" nowrap="nowrap"><?php echo $key->nobukti ?></td>
+			<td class="garis_bwh2" align="center" nowrap="nowrap"><?php echo $this->format->tgl(substr($key->tanggal,0,11)) ?></td>
+			<td class="garis_bwh2" align="left" nowrap="nowrap"><?php echo $key->keterangan ?></td>
+			<td class="garis_bwh2" align="right" nowrap="nowrap"><?php echo $this->format->number($key->rupiah) ?></td>
+			<td class="garis_bwh2" align="right" nowrap="nowrap"><?php echo $this->format->number($saldo_bln_lalu) ?></td>
+		</tr>
+	<?php }
+	$grand_total = $grand_total + $sub_total; 
+	?>
+	<!-- end transaksi -->
+	<tr>
+		<td colspan="5" class="garis_bwh2" align="right" nowrap="nowrap">JUMLAH</td>
+		<td class="garis_bwh2" align="right" nowrap="nowrap"><b><?php echo $this->format->number($sub_total) ?></b></td>
+		<td class="garis_bwh2" align="right" nowrap="nowrap"></td>
+	</tr>
+<?php
+ }# end of while 01
 ?>
 
 <tr>
@@ -113,14 +180,13 @@ while ( ($item = @$groupcoa_3dgt->fetchObject()) !== false ){
 </tr>
 <tr>
 	<td colspan="5" NOWRAP class="garis_bwh2"><div align="right"><strong>TOTAL</strong></div></td>
-	<td align="right" nowrap="nowrap" class="garis_bwh2" style="font: 12px 'Arial';"><strong><?php echo $this->format->number(@$total_bawah); ?></strong></td>
-	<td align="right" nowrap="nowrap" class="garis_bwh2" style="font: 12px 'Arial';"><strong><?php echo $this->format->number(@$total_bius); ?></strong></td>
+	<td align="right" nowrap="nowrap" class="garis_bwh2" style="font: 12px 'Arial';"><?php echo $this->format->number($grand_total) ?></strong></td>
+	<td align="right" nowrap="nowrap" class="garis_bwh2" style="font: 12px 'Arial';">0</strong></td>
 </tr>
 </table>
 </div>
 </div>
 </body>
 <br>
-
 <!-- end report_biaya_usaha_printable_rinci -->
 </html>
