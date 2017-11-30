@@ -57,12 +57,35 @@ $kode_total="";
 $novi_kode="";
 $total_bawah = 0;
 
+$sql_bl ="
+			SELECT
+				SUM(CASE WHEN dk = 'D' THEN
+			               rupiah
+			           ELSE
+			              rupiah * -1
+			           END ) as rupiah
+			FROM
+				jurnal_v
+			WHERE
+				kdperkiraan LIKE '49%'
+			AND tanggal >= '".$awal_tahun."'
+			AND tanggal < '".$bulan_ini."'
+		";
+
+$ql_bl = $this->db->query($sql_bl)->row();
+$total_saldo_bln_lalu = $ql_bl->rupiah; 
+
 ?>
 
-<tr class="sums">
-	<td colspan="5" NOWRAP class="garis_bwh2"><b>49&nbsp;PENGEMBANGAN SDM</b></td>		
-	<td align=left class="garis_bwh2"><div align="right"></div></td>
-	<td align=left class="garis_bwh2"><div align="right"></div></td>
+<!-- <tr>
+	<td colspan="5" NOWRAP class="garis_bwh2"></td>
+	<td align="right" nowrap="nowrap" class="garis_bwh2" style="font: 12px 'Arial';"><strong>Total Saldo Bulan Lalu</strong></td>
+	<td align="right" nowrap="nowrap" class="garis_bwh2" style="font: 12px 'Arial';"><strong><?php echo $this->format->number($total_saldo_bln_lalu) ?></strong></td>
+</tr> -->
+<tr>
+	<td colspan="5" NOWRAP class="garis_bwh2">&nbsp;</td>	
+	<td class="garis_bwh2" align="right" nowrap="nowrap"><b>Total Saldo Bulan Lalu</b></td>
+	<td class="garis_bwh2" align="right" nowrap="nowrap"><?php echo $this->format->number($total_saldo_bln_lalu) ?></td>
 </tr>
 
 <?php
@@ -102,8 +125,8 @@ $cek_4dgt = $item->kdper_4dgt;
 				jurnal_v
 			WHERE
 				kdperkiraan = '".$item->kdper_5dgt."'
-			AND tanggal >= '2017-01-01'
-			AND tanggal < '2017-11-01'
+			AND tanggal >= '".$awal_tahun."'
+			AND tanggal < '".$bulan_depan."'
 			";
 
 	$sql02 = $this->db->query($ql02)->row();
@@ -127,23 +150,17 @@ $cek_4dgt = $item->kdper_4dgt;
 			j.tanggal,
 			j.nobukti,
 			j.keterangan,
-			j.rupiah
+			j.rupiah,
+			j.dk
 		FROM
 			jurnal_v j
 		JOIN dperkir d ON j.kdperkiraan = d.kdperkiraan
 		WHERE
 			j.kdperkiraan = '".$item->kdper_5dgt."'
-		AND tanggal > '2017-10-01'
-		AND tanggal < '2017-11-01'
-		GROUP BY
-		j.kdperkiraan,
-			d.nmperkiraan,
-			j.tanggal,
-			j.nobukti,
-			j.keterangan,
-			j.rupiah
+		AND tanggal >= '".$bulan_ini."'
+			AND tanggal < '".$bulan_depan."'
 		ORDER BY
-			coa ASC
+			j.nobukti ASC
 		";
 
 	$sql = $this->db->query($ql)->result();
@@ -151,19 +168,26 @@ $cek_4dgt = $item->kdper_4dgt;
 
 	$sub_total = 0;
 	foreach ($sql as $key) {
-		$saldo_bln_lalu = $saldo_bln_lalu - $key->rupiah;
-		$sub_total = $sub_total + $key->rupiah;
+		if ($key->dk == 'K') {
+			$mutasi = ($key->rupiah * -1);
+		}else{
+			$mutasi = $key->rupiah;
+		}
+		$saldo_bln_lalu = $saldo_bln_lalu + $mutasi;
+		$sub_total = $sub_total + $mutasi;
 		?>
 		<tr>
 			<td colspan="2" >&nbsp;</td>		
 			<td class="garis_bwh2" align="center" nowrap="nowrap"><?php echo $key->nobukti ?></td>
 			<td class="garis_bwh2" align="center" nowrap="nowrap"><?php echo $this->format->tgl(substr($key->tanggal,0,11)) ?></td>
 			<td class="garis_bwh2" align="left" nowrap="nowrap"><?php echo $key->keterangan ?></td>
-			<td class="garis_bwh2" align="right" nowrap="nowrap"><?php echo $this->format->number($key->rupiah) ?></td>
+			<td class="garis_bwh2" align="right" nowrap="nowrap"><?php echo $this->format->number($mutasi) ?></td>
 			<td class="garis_bwh2" align="right" nowrap="nowrap"><?php echo $this->format->number($saldo_bln_lalu) ?></td>
 		</tr>
 	<?php }
-	$grand_total = $grand_total + $sub_total; 
+	$grand_total = $grand_total + $sub_total;
+	$grand_total_mutasi = $total_saldo_bln_lalu + $grand_total;
+
 	?>
 	<!-- end transaksi -->
 	<tr>
@@ -181,7 +205,7 @@ $cek_4dgt = $item->kdper_4dgt;
 <tr>
 	<td colspan="5" NOWRAP class="garis_bwh2"><div align="right"><strong>TOTAL</strong></div></td>
 	<td align="right" nowrap="nowrap" class="garis_bwh2" style="font: 12px 'Arial';"><?php echo $this->format->number($grand_total) ?></strong></td>
-	<td align="right" nowrap="nowrap" class="garis_bwh2" style="font: 12px 'Arial';">0</strong></td>
+	<td align="right" nowrap="nowrap" class="garis_bwh2" style="font: 12px 'Arial';"><?php echo $this->format->number($grand_total_mutasi) ?></strong></td>
 </tr>
 </table>
 </div>

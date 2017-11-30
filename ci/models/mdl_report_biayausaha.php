@@ -66,7 +66,7 @@ class Mdl_report_biayausaha extends Mdl_core {
 		return $this->_DB->query($sql);
 	}
 
-	public function data_transaksi_coa(){
+	public function data_transaksi_coa($bln_ini,$bln_depan){
 		$sql = "
 			SELECT
 				substr(j.kdperkiraan, 1, 3) AS kdper_3dgt,
@@ -78,8 +78,8 @@ class Mdl_report_biayausaha extends Mdl_core {
 			JOIN dperkir d ON j.kdperkiraan = d.kdperkiraan
 			WHERE
 				j.kdperkiraan LIKE '49%'
-			AND tanggal > '2017-10-01'
-			AND tanggal < '2017-11-01'
+			AND tanggal >= '".$bln_ini."'
+			AND tanggal < '".$bln_depan."'
 			GROUP BY
 			j.kdperkiraan,
 				d.nmperkiraan
@@ -90,7 +90,7 @@ class Mdl_report_biayausaha extends Mdl_core {
 		return $this->_DB->query($sql);
 	}
 
-	public function data_transaksi_detail($key){
+	public function data_transaksi_detail($key,$bln_ini,$bln_depan){
 		$sql = "
 			SELECT
 				j.kdperkiraan AS coa,
@@ -104,8 +104,8 @@ class Mdl_report_biayausaha extends Mdl_core {
 			JOIN dperkir d ON j.kdperkiraan = d.kdperkiraan
 			WHERE
 				j.kdperkiraan = '".$key."'
-			AND tanggal > '2017-10-01'
-			AND tanggal < '2017-11-01'
+			AND tanggal >= '".$bln_ini."'
+			AND tanggal < '".$bln_depan."'
 			GROUP BY
 			j.kdperkiraan,
 				d.nmperkiraan,
