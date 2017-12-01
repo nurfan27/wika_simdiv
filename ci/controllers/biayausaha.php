@@ -190,77 +190,28 @@ class Biayausaha extends CI_Controller {
 		}
 		//elseif($type === 'groupperkiraan'){
 	    elseif(($type === 'group') and ($type2 == 'perkiraan')){
-			//die('aaaa');
-			$i = 0;
-			$j=0;
-			$ikhtisarnow = $this->mdl_report_biayausaha->ikhtisar_pernow(strtolower($div),$year,$month,$uker_);
-			$ikhtisarsdnow = $this->mdl_report_biayausaha->ikhtisar_per(strtolower($div),$month2,$month4,$uker_);
-			$anggar = $this->mdl_report_biayausaha->anggaran(strtoupper($div),$year,$uker_);
-			while(($item = $ikhtisarsdnow->fetchObject()) !== false)
-			{
-				//$data['ikhtisar']['kode'][$i]=$item->kduker;
-				//$data['ikhtisar']['kodes'][$j]=$item->kduker;
-				$data['ikhtisar']['kdperkiraans'][$j]= $item->kdperkiraan;
-				$data['ikhtisar']['nmperkiraan'][$item->kdperkiraan]= $item->nmperkiraan;
-				//$data['ikhtisar'][$item->kduker]['kdperkiraan'][$i]=$item->kdperkiraan;
-				$data['ikhtisar']['kodegroup'][substr($item->kdperkiraan,0,2)][$i]=substr($item->kdperkiraan,0,4);
-				$data['ikhtisar']['rupiahsdnow2'][substr($item->kdperkiraan,0,2)][$i]=$item->debet;
-				$data['ikhtisar']['kodegroup2'][$i]=substr($item->kdperkiraan,0,2);
-				$data['ikhtisar']['kdperkiraan'][substr($item->kdperkiraan,0,4)][$j]=$item->kdperkiraan;
-				$data['ikhtisar']['rupiahsdnow'][substr($item->kdperkiraan,0,4)][$i]=$item->debet;
-				$data['ikhtisar']['nmperkiraan'][$i]=$item->nmperkiraan;
-				$data['ikhtisar']['rupiah'][$item->kdperkiraan]=$item->debet;		
-				$i++;
-				$j++;
-			}
-			$i=0;
-			while(($item = $ikhtisarnow->fetchObject()) !== false)
-			{
-				//$data['ikhtisar2']['kode'][$i]=$item->kduker;
-				//$data['ikhtisar']['kodes'][$j]=$item->kduker;
-				$data['ikhtisar']['kdperkiraans'][$j]= $item->kdperkiraan;
-				$data['ikhtisar2']['kdperkiraan']=$item->kdperkiraan;
-				$data['ikhtisar']['kdperkiraan'][substr($item->kdperkiraan,0,4)][$j]=$item->kdperkiraan;
-				$data['ikhtisar2'][$item->kdperkiraan]['rupiah']=$item->debet;	
-				$data['ikhtisar']['rupiah4'][substr($item->kdperkiraan,0,4)][$i]=$item->debet;
-				$data['ikhtisar']['rupiah2'][substr($item->kdperkiraan,0,2)][$i]=$item->debet;
-				$data['ikhtisar2'][$item->kdperkiraan]['rab']=$item->rab;
-				
-				//---kalo salah di delete
-				$data['ikhtisar']['kodegroup'][substr($item->kdperkiraan,0,2)][$j]=substr($item->kdperkiraan,0,4);
-				$data['ikhtisar']['kodegroup2'][$j]=substr($item->kdperkiraan,0,2);
-				//---end
-				$i++;
-				$j++;
-			}
-			$i=0;
-			while(($item = $anggar->fetchObject()) !== false)
-			{
-				//die('aaaa');
-				$data['wika']['rabb'][substr($item->kdperkiraan,0,4)][$i]=$item->rupiah;
-				$data['wika']['rabb2'][substr($item->kdperkiraan,0,2)][$i]=$item->rupiah;
-				$data['ikhtisar']['kdperkiraan'][substr($item->kdperkiraan,0,4)][$j]=$item->kdperkiraan;
-				$data['ikhtisar'][$item->kdperkiraan]['rab'][$i]=$item->rupiah;
-				//print_r($data['ikhtisar']['rupiahrab'][substr($item->kdperkiraan,0,2)]);
-				//$data['ikhtisar']['kodegroup'][$i]=substr($item->kdperkiraan,0,4);
-				
-				//---kalo salah di delete
-				$data['ikhtisar']['kodegroup'][substr($item->kdperkiraan,0,2)][$j]=substr($item->kdperkiraan,0,4);
-				$data['ikhtisar']['kodegroup2'][$j]=substr($item->kdperkiraan,0,2);
-				//---end
-				
-				$j++;
-				$i++;
-			}
-			
-				//print_r($data['ikhtisar']['kdperkiraans']);
-				$data['month']   = $this->rmonth($month);
-		        $data['year']    = $year;
-				$data['divisi'] = $this->divisi($div);
-				$data['timestamp'] = date('d M Y : H:i:s');
-				$data['pembuat'] = $admin_fullname;
-				//print_r($data['ikhtisar2']);
-				//$this->load->view('report/biayausaha_ikhtisar', $data);
+	    	
+			$data['div'] = $div;
+			$data['month2'] = $month2;
+			$data['month5'] = $month5;
+			$data['uker_'] = $uker_;
+
+			$bulan_ini = date("Y-m-d",mktime(0,0,0,$month,1,$year));
+			$bulan_depan = date("Y-m-d",mktime(0,0,0,$month+1,1,$year));
+			$awal_tahun = $year.'-01-01';
+
+			$data['bulan_ini'] = $bulan_ini;
+			$data['bulan_depan'] = $bulan_depan;
+			$data['awal_tahun'] = $awal_tahun;
+
+ 			$data['datarows'] = $this->mdl_report_biayausaha->data_ikhtisar_coa3();
+
+			$data['month']   	= $this->rmonth($month);
+	        $data['year']    	= $year;
+			$data['divisi'] 	= $this->divisi($div);
+			$data['timestamp'] 	= date('d M Y : H:i:s');
+			$data['pembuat'] 	= $admin_fullname;
+
 			$output = $this->load->view('report/biayausaha_ikhtisarperkiraan', $data, true);
 		
 			$filename 		= "bius_".$type."_".$type2."_".$uker_."_".strtoupper($POST['div'])."_".$year."_".$month.".html";
@@ -270,7 +221,6 @@ class Biayausaha extends CI_Controller {
 			
 			$this->output->set_output($output);
 		}
-				
 	}
 	
 	

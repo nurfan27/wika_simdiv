@@ -86,7 +86,6 @@ class Mdl_report_biayausaha extends Mdl_core {
 			ORDER BY
 				kdper_5dgt ASC
 		";
-
 		return $this->_DB->query($sql);
 	}
 
@@ -115,6 +114,25 @@ class Mdl_report_biayausaha extends Mdl_core {
 				j.rupiah
 			ORDER BY
 				coa ASC
+			";
+
+		return $this->_DB->query($sql);
+	}
+
+	public function data_ikhtisar_coa3(){
+		$sql = "
+				SELECT DISTINCT substr(j.kdperkiraan, 1,3) AS coa3,  
+				SUM(
+						CASE
+							WHEN dk = 'D' THEN rupiah
+							ELSE (rupiah * -1) 
+						END 
+					) as jml3
+				FROM jurnal_v j WHERE 
+				j.kdperkiraan like '49%'
+				AND tanggal >= '2017-09-01'
+				AND tanggal < '2017-10-01'
+				GROUP BY coa3
 			";
 
 		return $this->_DB->query($sql);

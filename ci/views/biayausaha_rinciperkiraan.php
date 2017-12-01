@@ -95,11 +95,38 @@ while ( ($item = @$datarows->fetchObject()) !== false ){ # start of while 01
 $saldo_bln_lalu = 0;
 $cek_3dgt = $item->kdper_3dgt;
 $cek_4dgt = $item->kdper_4dgt;
+
+switch ($item->kdper_3dgt) {
+		case '491':
+			$name = 'Biaya Pemasaran';
+			break;
+		case '492':
+			$name = 'Biaya Fasilitas Kantor';
+			break;
+		case '493':
+			$name = 'Biaya Informatika';
+			break;
+		case '494':
+			$name = 'Biaya Personalia';
+			break;
+		case '495':
+			$name = 'Biaya Keuangan';
+			break;
+		case '496':
+			$name = 'Biaya Pengembangan';
+			break;
+		case '497':
+			$name = 'Biaya Pengadaan';
+			break;
+		default:
+			$name = 'Tidak Dikenal';
+			break;
+	}
 ?>	
 
 <?php if ($cek_3dgt != $pos_3dgt): $pos_3dgt = $item->kdper_3dgt;?>
 	<tr class="sums">
-		<td colspan="5" NOWRAP class="garis_bwh2"><b><?php echo $item->kdper_3dgt;?>&nbsp;</b></td>		
+		<td colspan="5" NOWRAP class="garis_bwh2"><b><?php echo $item->kdper_3dgt;?>&nbsp;&nbsp;<?php echo $name;?></b></td>		
 		<td align=left class="garis_bwh2"><div align="right"></div></td>
 		<td align=left class="garis_bwh2"><div align="right"></div></td>
 	</tr>
