@@ -204,7 +204,7 @@ class Biayausaha extends CI_Controller {
 			$data['bulan_depan'] = $bulan_depan;
 			$data['awal_tahun'] = $awal_tahun;
 
- 			$data['datarows'] = $this->mdl_report_biayausaha->data_ikhtisar_coa3();
+ 			$data['datarows'] = $this->mdl_report_biayausaha->data_ikhtisar_coa3($bulan_ini,$bulan_depan);
 
 			$data['month']   	= $this->rmonth($month);
 	        $data['year']    	= $year;

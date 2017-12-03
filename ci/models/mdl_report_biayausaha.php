@@ -119,7 +119,7 @@ class Mdl_report_biayausaha extends Mdl_core {
 		return $this->_DB->query($sql);
 	}
 
-	public function data_ikhtisar_coa3(){
+	public function data_ikhtisar_coa3($bln_ini,$bln_depan){
 		$sql = "
 				SELECT DISTINCT substr(j.kdperkiraan, 1,3) AS coa3,  
 				SUM(
@@ -130,8 +130,8 @@ class Mdl_report_biayausaha extends Mdl_core {
 					) as jml3
 				FROM jurnal_v j WHERE 
 				j.kdperkiraan like '49%'
-				AND tanggal >= '2017-09-01'
-				AND tanggal < '2017-10-01'
+				AND tanggal >= '".$bln_ini."'
+				AND tanggal < '".$bln_depan."'
 				GROUP BY coa3
 			";
 

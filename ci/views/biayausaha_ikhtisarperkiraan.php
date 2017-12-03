@@ -2,8 +2,6 @@
 	<html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-
-		
 	
 		<link title=win2k-1 media=all href="<?php echo $BASE_SIMDIV;?>images/calendar2-blue.css" type=text/css rel=stylesheet>
 		<link media=all href="<?php echo $BASE_SIMDIV;?>images/assets/styles/popups.css" type=text/css rel=stylesheet>
@@ -63,8 +61,8 @@ while ( ($item = @$datarows->fetchObject()) !== false ){ # start of while 01
 					) as jml3_thn
 				FROM jurnal_v j WHERE 
 				j.kdperkiraan like '".$item->coa3."%'
-				AND tanggal >= '2017-01-01'
-				AND tanggal < '2017-10-01'
+				AND tanggal >= '".$awal_tahun."'
+				AND tanggal < '".$bulan_depan."'
 				GROUP BY coa3
 			";
 
@@ -117,8 +115,8 @@ while ( ($item = @$datarows->fetchObject()) !== false ){ # start of while 01
 					) as jml4
 				FROM jurnal_v j WHERE 
 				j.kdperkiraan like '".$item->coa3."%'
-				AND tanggal >= '2017-09-01'
-				AND tanggal < '2017-10-01'
+				AND tanggal >= '".$bulan_ini."'
+				AND tanggal < '".$bulan_depan."'
 				GROUP BY coa4
 			";
 
@@ -135,8 +133,8 @@ while ( ($item = @$datarows->fetchObject()) !== false ){ # start of while 01
 					) as jml4_thn
 				FROM jurnal_v j WHERE 
 				j.kdperkiraan like '".$key->coa4."%'
-				AND tanggal >= '2017-01-01'
-				AND tanggal < '2017-10-01'
+				AND tanggal >= '".$awal_tahun."'
+				AND tanggal < '".$bulan_depan."'
 				GROUP BY coa4
 			";
 
@@ -147,9 +145,9 @@ while ( ($item = @$datarows->fetchObject()) !== false ){ # start of while 01
 		<tr class="sums">
 			<td style="{style}" NOWRAP colspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?php echo $key->coa4;?></b>&nbsp;</td>
 			<td style="{style}" align="right" nowrap="nowrap"><div align="right">0</div></td><!-- RAB -->
-			<td style="{style}" align="right" nowrap="nowrap"><div align="right"><?php echo  $this->format->number($key->jml4)?></div></td><!-- rupiah -->
+			<td style="{style}" align="right" nowrap="nowrap"><div align="right"><b><?php echo  $this->format->number($key->jml4)?></b></div></td><!-- rupiah -->
 			<td style="{style}" align="right" nowrap="nowrap">0</td><!-- % -->
-			<td style="{style}" align="right" nowrap="nowrap"><div align="right"><?php echo  $this->format->number($sql_sd04->jml4_thn) ?></div></td><!-- rupiah -->
+			<td style="{style}" align="right" nowrap="nowrap"><div align="right"><b><?php echo  $this->format->number($sql_sd04->jml4_thn) ?></b></div></td><!-- rupiah -->
 			<td style="{style}" align="right" nowrap="nowrap">0</td><!-- % -->
 		</tr>
 	
@@ -172,16 +170,16 @@ while ( ($item = @$datarows->fetchObject()) !== false ){ # start of while 01
 							jurnal_v
 						WHERE
 							kdperkiraan = j.kdperkiraan
-					AND tanggal >= '2017-01-01'
-					AND tanggal < '2017-10-01'
+					AND tanggal >= '".$awal_tahun."'
+					AND tanggal < '".$bulan_depan."'
 					) AS jum5_thn 
 					FROM
 						jurnal_v j
 					JOIN dperkir d ON j.kdperkiraan = d.kdperkiraan
 					WHERE
 						j.kdperkiraan LIKE '".$key->coa4."%'
-					AND tanggal >= '2017-09-01'
-					AND tanggal < '2017-10-01'
+					AND tanggal >= '".$bulan_ini."'
+					AND tanggal < '".$bulan_depan."'
 					GROUP BY
 					j.kdperkiraan,
 					d.nmperkiraan
@@ -216,6 +214,9 @@ while ( ($item = @$datarows->fetchObject()) !== false ){ # start of while 01
 	<td align="right" nowrap="nowrap"><span class="style1" style="font-size:12px"><b><?php echo $this->format->number($total_sd); ?></b></span></td>
 	<td align="right" nowrap="nowrap"><span class="style1" style="font-size:12px">0</span></td>
 </tr> -->
+<?php 
+$total_sd_srg = $total_now + $total_sd;
+ ?>
 <tr class="sums">
 	<td style="{style}" NOWRAP colspan="2"><b>TOTAL BIAYA USAHA&nbsp;&nbsp;</b></td>
 	<td style="{style}" align="right" nowrap="nowrap"><div align="right">0</div></td>
