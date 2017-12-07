@@ -7,19 +7,6 @@ class Mdl_report_biayausaha extends Mdl_core {
 		parent::__construct();		
 		$this->_DB = parent::$API_DB;
 	}
-
-	public function get_dperkir_3(){
-		$sql = "SELECT DISTINCT substr(kdperkiraan,1,3) AS coa  FROM dperkir WHERE substr(dperkir.kdperkiraan, 1 ,2) = '49' ORDER BY coa  ASC";
-
-		return $this->_DB->query($sql);
-	}
-
-	public function get_dperkir_4($key){
-		$sql = "SELECT DISTINCT substr(dperkir.kdperkiraan, 1 ,4) as coa  FROM dperkir WHERE substr(dperkir.kdperkiraan,1,3) like '".$key."%' ORDER BY coa  ASC;";
-
-		return $this->_DB->query($sql);
-	}
-
 	public function saldo_tahunlalu($div='',$month1='',$month2='',$uker_='',$sort='')
 	{
 		/*$sql = "
@@ -65,80 +52,6 @@ class Mdl_report_biayausaha extends Mdl_core {
 		//echo $sql;
 		return $this->_DB->query($sql);
 	}
-
-	public function data_transaksi_coa($bln_ini,$bln_depan){
-		$sql = "
-			SELECT
-				substr(j.kdperkiraan, 1, 3) AS kdper_3dgt,
-				substr(j.kdperkiraan, 1, 4) AS kdper_4dgt,
-				substr(j.kdperkiraan, 1, 5) AS kdper_5dgt,
-				d.nmperkiraan
-			FROM
-				jurnal_v j
-			JOIN dperkir d ON j.kdperkiraan = d.kdperkiraan
-			WHERE
-				j.kdperkiraan LIKE '49%'
-			AND tanggal >= '".$bln_ini."'
-			AND tanggal < '".$bln_depan."'
-			GROUP BY
-			j.kdperkiraan,
-				d.nmperkiraan
-			ORDER BY
-				kdper_5dgt ASC
-		";
-		return $this->_DB->query($sql);
-	}
-
-	public function data_transaksi_detail($key,$bln_ini,$bln_depan){
-		$sql = "
-			SELECT
-				j.kdperkiraan AS coa,
-				d.nmperkiraan,
-				j.tanggal,
-				j.nobukti,
-				j.keterangan,
-				j.rupiah
-			FROM
-				jurnal_v j
-			JOIN dperkir d ON j.kdperkiraan = d.kdperkiraan
-			WHERE
-				j.kdperkiraan = '".$key."'
-			AND tanggal >= '".$bln_ini."'
-			AND tanggal < '".$bln_depan."'
-			GROUP BY
-			j.kdperkiraan,
-				d.nmperkiraan,
-				j.tanggal,
-				j.nobukti,
-				j.keterangan,
-				j.rupiah
-			ORDER BY
-				coa ASC
-			";
-
-		return $this->_DB->query($sql);
-	}
-
-	public function data_ikhtisar_coa3($bln_ini,$bln_depan){
-		$sql = "
-				SELECT DISTINCT substr(j.kdperkiraan, 1,3) AS coa3,  
-				SUM(
-						CASE
-							WHEN dk = 'D' THEN rupiah
-							ELSE (rupiah * -1) 
-						END 
-					) as jml3
-				FROM jurnal_v j WHERE 
-				j.kdperkiraan like '49%'
-				AND tanggal >= '".$bln_ini."'
-				AND tanggal < '".$bln_depan."'
-				GROUP BY coa3
-				order by coa3 ASC
-			";
-
-		return $this->_DB->query($sql);
-	}
-
 	public function rincian_realisasi($div='',$month1='',$month2='')
 	{
 		$sql = "
@@ -428,14 +341,6 @@ class Mdl_report_biayausaha extends Mdl_core {
 	public function get_namaperkiraan($kd)
 	{
 		$sql = "SELECT gname AS nmperkiraan FROM dperkir_group bawah WHERE bawah LIKE '$kd%' ";//dperkir where kdperkiraan='{$kd}'";
-		//echo $sql;
-		$query = $this->_DB->query($sql)->fetchObject();
-		return $query->nmperkiraan;
-	}
-
-	public function get_namaperkiraan_dperkir($kd)
-	{
-		$sql = "SELECT nmperkiraan FROM dperkir WHERE kdperkiraan  = '$kd' ";//dperkir where kdperkiraan='{$kd}'";
 		//echo $sql;
 		$query = $this->_DB->query($sql)->fetchObject();
 		return $query->nmperkiraan;

@@ -118,6 +118,7 @@ while ( ($item = @$datarows->fetchObject()) !== false ){ # start of while 01
 				AND tanggal >= '".$bulan_ini."'
 				AND tanggal < '".$bulan_depan."'
 				GROUP BY coa4
+				ORDER BY coa4 ASC
 			";
 
 	$sql04 = $this->db->query($ql03)->result();
