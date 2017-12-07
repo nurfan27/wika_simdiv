@@ -1,0 +1,12 @@
+	<tr>
+    	<td><?=$nmperkiraan ?></td>
+    	<td align="right">&nbsp;</td>
+        <td align="right"><?=$konsolidasi_bln_ini ?></td>
+        <td align="right">&nbsp;</td>
+        <td align="right"><?=$konsolidasi_sd_bln_ini ?></td>
+        <td align="right">&nbsp;</td>
+        <td align="right"><?=$divisi_bln_ini ?></td>
+        <td align="right"><?=$divisi_sd_bln_ini ?></td>
+        <td align="right"><?=$proyek_bln_ini ?></td>
+        <td align="right"><?=$proyek_sd_bln_ini ?></td>
+    </tr>

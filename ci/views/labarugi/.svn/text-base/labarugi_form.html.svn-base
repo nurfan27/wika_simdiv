@@ -1,0 +1,82 @@
+<script>
+function doexcel(REP_TYPE,frm,is_proses)
+{
+	rand = Math.random();
+	popFullScreen2 ('http://e-accounting.wika.co.id/ci/index.php/labarugi/popup_excel/'+frm.div.value+'/'+document.getElementById('year').value+'/'+document.getElementById('month').value,rand);
+}
+
+function dotampilkan(REP_TYPE,frm,is_proses)
+{
+	rand = Math.random();
+	popFullScreen2('http://e-accounting.wika.co.id/ci/index.php/labarugi/popup/'+frm.div.value+'/'+document.getElementById('year').value+'/'+document.getElementById('month').value,rand);
+}
+$(document).ready(function(){
+    $("#tampil").hide();
+    $("#proses").hide();
+    $("#excel").hide();
+    //$("#ikhtisar").hide();
+            
+   // change_reptype('biaya_usaha');
+    $("select").change(function(){
+        cek_report();
+    });
+    cek_report();
+})
+
+function cek_report()
+{
+    var url = "http://e-accounting.wika.co.id/ci/index.php/labarugi/cek_report";
+    var param = $("#frm").serialize();  
+    /*if($("#type").val() == "group")
+    {
+    	$("#ikhtisar").show();
+    	//$("#kduker").show();
+    }
+    else
+    {
+    	$("#ikhtisar").hide();
+    	//$("#kduker").hide();
+    }*/
+    $.post(url, param, function(ret){
+        if(ret == 1)
+        {
+            $("#tampil").show();
+            $("#proses").show();
+            $("#excel").show();
+        }
+        else
+        {
+            $("#tampil").hide();
+            $("#proses").show();
+            $("#excel").hide();
+        }
+    })
+    
+}
+</script>
+<style>
+	.uppercase {
+		text-transform: uppercase;
+	}
+</style>
+<h1>Laporan: {TITLE}</h1>
+<form name="frm" id="frm" action="{FORM_ACTION}" method="POST"  target="_blank">
+	<input type="hidden" name="data[div]" value="{DIV}" id="div"/>
+    <input type="hidden" name="data[admin_fullname]" value="{ADMIN_FULLNAME}" id="adminfull"/>
+	<div class="form">
+       	<fieldset class="half" id="kftgl">
+			<span> <label>Periode</label>
+				{FORM_BLN}
+                -                
+				&nbsp;
+				{FORM_TAHUN} </span>
+		</fieldset>
+	</div>
+	<div class="form">
+		<fieldset style="border: none;">
+			<input type="button" style="display:" value="Tampilkan" id="tampil" onClick="dotampilkan('rk_div',frm,false);" />
+			<input type="button" style="display:" value="Proses Laporan" id="proses" onclick="submit()" />
+			<input type="button" value="Export ke Excel" onClick="doexcel('rk_div',frm,true);" id="excel" style="display:" />
+		</fieldset>
+</div>
+</form>
